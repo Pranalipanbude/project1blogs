@@ -1,9 +1,22 @@
-const authormodel= require("../model/authorModels")
+const authorModels = require("../model/authorModels")
+//const AuthorModel = require("../model/authorModels")
 
-const createAuthor= async function(req, res){
-    let data= req.body
-   let savedData= await authormodel.create(data)
-   res.send({msg: savedData})
+const createAuthor = async function (req, res) {
+    try {
+        let data = req.body
+        if (Object.keys(data).length != 0) {
+            let savedData = await authorModels.create(data)
+           return res.status(201).send({ msg: savedData })
+        }
+        else {
+           return res.status(400).send({ msg: "Bad Request" })      // (400) = {the server cannot or will not process the request due to something that is perceived to be a client error}
+        }
+    }
+    catch (err) {
+        console.log(err)
+       return res.status(500).send({ msg: "error", err: err.message })
+    }
 }
 
-module.exports.createAuthor=createAuthor
+
+module.exports.createAuthor = createAuthor
