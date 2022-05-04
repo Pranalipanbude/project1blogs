@@ -11,16 +11,48 @@ const authMiddleware= require("../middleware/authMiddlerware")
 const createBlogger = async function (req, res) {
     try {
         const id = req.body.authorId;
-        if (!id) return res.status(404).send({ msg: "id is compulsory" })
+       if(!id){
+           res.status(404).send({msg:'Id is compullsary'})
+       }
         const checkId = await authorModels.findById(id);
         if (!checkId)
             return res.status(400).send({ status: false, msg: "provide valid author id" });
+
         const blogData = req.body;
-        if (blogData.isPublished === false || blogData.delete) {
+        if (blogData.isPublished === false) {
 
             const blogCreation = await blogModels.create(blogData);
             return res.status(201).send({ status: true, data: blogCreation });
-        } else {
+        } 
+        const{title, body, authorId, tags, category, subcategory,}=blogData
+
+            if(!title){
+                return res.status(400).send({msg:'title is required'})
+            }
+
+            if(!body){
+                return res.status(400).send({msg:'body is required'})
+            }
+
+            
+            if(!authorId){
+                return res.status(400).send({msg:'authorId is required'})
+            }
+            
+            if(!tags){
+                return res.status(400).send({msg:'tags is required'})
+            }
+
+            
+            if(!category){
+                return res.status(400).send({msg:'category is required'})
+            }
+            
+            if(!subcategory){
+                return res.status(400).send({msg:'subcategory is required'})
+            }
+
+        else {
 
             blogData.publishedAt = new Date();
             const blogCreation = await blogModels.create(blogData);
@@ -40,8 +72,12 @@ const createBlogger = async function (req, res) {
 const getBlogs = async function (req, res) {
     try {
         let data = req.query;
-        let blogsPresent = await blogModels.find({ deleted: false, isPublished: true, ...data }).count()
-        res.status(200).send({ status: true, msg: blogsPresent })
+        let datablog = await blogModels.find({ deleted: false, isPublished: true, ...data })
+        if(!datablog)return res.status(404).send({msg:"no such data"})
+        if(datablog.length ==0){
+            return res.status(404).send({msg: "no blogs are present"})
+        }
+        res.status(200).send({ msg: datablog })
     }
     catch (err) {
         res.status(500).send({ status: false, msg: err.message })
@@ -52,7 +88,7 @@ const getBlogs = async function (req, res) {
 
 
 
-const Bloggs = async function (req, res) {
+const Bloggs = async function(req, res) {
     try {
         let data = req.body
         let blogId = req.params.blogId
@@ -60,17 +96,17 @@ const Bloggs = async function (req, res) {
         if (!blogId) return res.status(400).send({ status: false, msg: "blogid is required" })
         let findblog = await blogModels.findById(blogId)
         if (!findblog) return res.status(404).send({ msg: "blogid invalid" })
-        if (findblog.deleted == true) return res.status(404).send({ msg: "Blog is already deleted " })
-        if (findblog.deleted == false) {
-            let updatedBlog = await blogModel.findOneAndUpdate({ _id: blogId }, {
+        if (findblog.isDeleted == true) return res.status(404).send({ msg: "Blog is already deleted " })
+        if (findblog.isDeleted == false) {
+            let updatedBlog = await blogModels.findOneAndUpdate({ _id: blogId},{ 
                 $set: {
                     title: data.title,
                     body: data.body,
                     category: data.category,
-                    publishedAt: moment().format(),
+                    publishedAt:moment().format(),
                     isPublished: true
                 },
-                $push: {
+               $push:  {
                     tags: req.body.tags,
                     subcategory: req.body.subcategory
                 }
@@ -81,8 +117,6 @@ const Bloggs = async function (req, res) {
         res.status(500).send({ status: false, msg: err.message });
     }
 }
-
-
 
 
 

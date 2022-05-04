@@ -2,8 +2,6 @@ const mongoose = require("mongoose")
 const moment = require("moment")
 const { required } = require("nodemon/lib/config")
 const ObjectId = mongoose.Schema.Types.ObjectId
-// const date = new Date();
-// const todayDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
 
 
 let date = moment().format('DD/MM/YYYY');
@@ -14,14 +12,14 @@ const blogSchema = new mongoose.Schema({
 
     "title": {
         type: String,
-        required: [true, "title is required"],
+        required:  "title is required",
         trim: true,
     },
 
 
     "body": {
         type: String,
-        required: [true, "body is required"],
+        required: "body is required",
         trim: true
     },
 
@@ -29,34 +27,35 @@ const blogSchema = new mongoose.Schema({
     "authorId": {
         type: ObjectId,
         ref: "author",
-        required: [true, "authorId is required"]
+        required: "authorId is required"
     },
 
 
-    "tags": [{ type: String }],
+    "tags": [{ type: String, trim:true }],
     "category": {
         type: String,
-        required: true
+        trim:true,
+        required: "blog category is required",
         // examples :[technology,entertainment,life style,food,fashion]
     },
 
 
 
-    "subcategory": [{ type: String }],
+    "subcategory": [{ type: String , trim:true}],
     "isPublished": {
         type: Boolean,
         default: false
     },
 
 
-    "publishedAt": Date, // if published is true publishedAt will have a date 2021-09-17T04:25:07.803Z
+    "publishedAt": Date, 
     date: {
         type: String,
-        default: date
+        default: null
     },
 
 
-    "deleted": {
+    "isDeleted": {
         type: Boolean,
         default: false
     },
@@ -66,7 +65,7 @@ const blogSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-module.exports = mongoose.model("blog", blogSchema)
+module.exports = mongoose.model("blogs", blogSchema)
 
 
 

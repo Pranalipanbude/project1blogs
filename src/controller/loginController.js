@@ -6,7 +6,7 @@ const blogModels = require("../model/blogModels");
 const loginUser = async function (req, res) {
      try {
       let email = req.body.email;
-      let password = req.body.password
+      let password = req.body.password;
 
       
         let user = await authorModels.findOne({ email: email , password: password });

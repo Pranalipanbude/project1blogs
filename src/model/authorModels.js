@@ -3,43 +3,42 @@ const mongoose = require("mongoose")
 const authorSchema = new mongoose.Schema({
 
 
-  "firstName": {
+  "fname": {
     type: String,
-    required: [true, "firstName is required"],
-    trim: true
+    required: "first Name is required",
+    trim: true,
   },
 
-  "lastName": {
+  "lname": {
     type: String,
-    required: [true, "lastName is required"],
-    trim: true
+    required:  "last Name is required",
+    trim: true,
   },
 
   "title": {
     type: String,
-    required: [true, "title is required"],
-    enum: ["Mr", "Mrs", "Miss"],
-    trim: true
+    required: "title is required",
+    enum: ["Mr", "Mrs", "Miss", "must"],
+   
   },
 
   "emailId": {
     type: String,
-    // validate1:[isValidEmail,"enter valid email"]
+    required: "Email address is required",
+    unique: true,
+    lowercase: true,
+    trim: true,
     validate: {
       validator: function (v) {
         return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
       },
-      message: "Please enter a valid emailId"
-    },
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true
+      message: "Please fill a valid email address",
+    }
   },
 
   "password": {
     type: String,
-    required: [true, "password is required"],
+    required: "password is required",
     trim: true
   }
 
